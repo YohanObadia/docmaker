@@ -63,6 +63,17 @@ def generate_rst_files(documentation_folder, notebooks_folder):
 	return rst_paths
 
 
+def convert_notebooks(documentation_folder, notebooks_folder, format):
+	notebooks_paths = glob(f'{notebooks_folder}*.ipynb')
+	notebooks_names = [os.path.basename(x) for x in notebooks_paths]
+	print(f'NOTEBOOK NAMES : {notebooks_names}')
+	paths = [f"{documentation_folder}source/{x.replace('ipynb', '{format}')}" for x in notebooks_names]
+	for srcpath, destpath in zip(notebooks_paths, paths):
+		os.system(f"""jupyter-nbconvert --to {format} "{srcpath}" --output "{destpath}" """)
+	paths = glob(f'{documentation_folder}source/*.{format}')
+	return paths
+
+
 def update_index(documentation_folder, notebooks_paths, master, max_depth):
 	index_path = f'{documentation_folder}source/{master}.rst'
 	notebook_names = [os.path.basename(x).replace('.ipynb','') for x in notebooks_paths]
@@ -110,7 +121,7 @@ if __name__=="__main__":
 	suffix ='.rst'
 	master ='index'
 	max_depth = 2
-	extensions = ['nbsphinx','sphinx.ext.mathjax','sphinx.ext.imgmath']
+	extensions = ['nbsphinx','sphinx.ext.mathjax']#,'sphinx.ext.imgmath']
 
 	# Prepare the Sphinx project holder
 	manage_file.remove_folder(documentation_folder)
@@ -122,7 +133,8 @@ if __name__=="__main__":
 	# Apply the desired extensions
 	apply_extensions(documentation_folder, extensions)
 
-	rst_paths = generate_rst_files(documentation_folder, notebooks_folder)
+	convert_notebooks(documentation_folder, notebooks_folder, 'pdf')
+	#rst_paths = generate_rst_files(documentation_folder, notebooks_folder)
 
 	# Insert rst files into the index file in the correct order and build the project's HTML
 	notebooks_paths = glob(f'{documentation_folder}source/*.ipynb')

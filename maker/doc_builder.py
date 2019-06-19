@@ -97,13 +97,14 @@ if __name__=="__main__":
 	# Build the documentation for this project
 	##########################################
 
-	# Get the absolute paths for the documentation 
-	documentation_folder = 'C:/Users/yohan/Desktop/BDF/docmaker/documentation/documentation/'
-	notebooks_folder = 'C:/Users/yohan/Desktop/BDF/docmaker/documentation/notebooks/'
+	# Get the absolute paths for the documentation
+	current_folder = os.getcwd()
+	documentation_folder = f'{current_folder}/../documentation/documentation/'
+	notebooks_folder = f'{current_folder}/../documentation/notebooks/'
 
 	# Get other important variables
 	project ='DocMakerDocumentation'
-	author ='Yohann'
+	author ='Yohan'
 	version ='0.0.1'
 	language ='en'
 	suffix ='.rst'
@@ -131,4 +132,5 @@ if __name__=="__main__":
 
 	html_paths = glob(f'{documentation_folder}build/*html')
 	#print(html_paths)
-	pdfkit.from_file('C:/Users/yohan/Desktop/BDF/docmaker/documentation/documentation/build/documentation.html', 'out.pdf')
+	pdfkit.from_file('C:/Users/yohan/Desktop/BDF/docmaker/documentation/documentation/build/02_documentation.html', 'out.pdf')
+_

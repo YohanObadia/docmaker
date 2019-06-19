@@ -103,7 +103,7 @@ if __name__=="__main__":
 
 	# Get other important variables
 	project ='DocMakerDocumentation'
-	author ='Yohan'
+	author ='Yohann'
 	version ='0.0.1'
 	language ='en'
 	suffix ='.rst'

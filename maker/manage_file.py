@@ -2,9 +2,14 @@ from datetime import datetime
 import os
 import shutil
 from glob import glob
+from pathlib import Path
 
 class BackupError(Exception):
 	pass
+
+def get_parent_folder(path):
+	p = Path(path)
+	return p.parent.parts[-1]
 
 def rename_file(file_path):
 	"""Add a time information to the file received"""
@@ -82,6 +87,13 @@ def move_file(old_path, new_path):
 		os.rename(old_path, new_path)
 	except OSError:
 	    pass
+
+def copy_file(old_path, new_path):
+	make_folder(new_path)
+	try:
+		shutil.copy(old_path, new_path)
+	except:
+		pass
 
 
 def get_file_modified_date(path):

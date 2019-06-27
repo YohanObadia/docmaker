@@ -80,6 +80,7 @@ def convert_notebooks(documentation_folder, notebooks_folder, format):
 	paths = glob(f'{documentation_folder}source/*/*.{format}')
 	return paths
 
+
 def notebooks_to_source(notebooks_folder, documentation_folder):
 	notebooks_paths = glob(f'{notebooks_folder}/*/*.ipynb')
 	notebooks_names = [os.path.basename(x) for x in notebooks_paths]
@@ -87,6 +88,7 @@ def notebooks_to_source(notebooks_folder, documentation_folder):
 		parent = manage_file.get_parent_folder(path)
 		manage_file.copy_file(path, f'{documentation_folder}/{parent}/')
 	return
+
 
 def get_toctree(notebook_folder, max_depth=2, hidden=True):
 	notebooks_paths = glob(f'{notebook_folder}/*ipynb')
@@ -132,6 +134,7 @@ def create_master(documentation_folder, notebooks_folder, master='index', max_de
 		f.write(master)
 	return
 
+
 def make_html(documentation_folder):
 	os.chdir(documentation_folder)
 	os.system(f"""python -m sphinx {documentation_folder}source/ {documentation_folder}build/""")
@@ -144,8 +147,8 @@ if __name__=="__main__":
 
 	# Get the absolute paths for the documentation
 	current_folder = os.getcwd()
-	documentation_folder = f'{current_folder}/../docs/documentation/'
-	notebooks_folder = f'{current_folder}/../docs/notebooks/'
+	documentation_folder = f'{current_folder}/../documentation/documentation/'
+	notebooks_folder = f'{current_folder}/../documentation/notebooks/'
 
 	# Get other important variables
 	project ='Criblage'

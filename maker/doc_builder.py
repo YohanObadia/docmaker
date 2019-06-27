@@ -147,8 +147,8 @@ if __name__=="__main__":
 
 	# Get the absolute paths for the documentation
 	current_folder = os.getcwd()
-	documentation_folder = f'{current_folder}/../documentation/documentation/'
-	notebooks_folder = f'{current_folder}/../documentation/notebooks/'
+	documentation_folder = f'{current_folder}/../doc/documentation/'
+	notebooks_folder = f'{current_folder}/../doc/notebooks/'
 
 	# Get other important variables
 	project ='Criblage'

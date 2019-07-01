@@ -116,6 +116,15 @@ def make_doc(documentation_folder, format):
 	os.system(f"""python -m sphinx -b {format} {documentation_folder}source/ {documentation_folder}build/""")
 
 
+def update_index(documentation_folder, first_section, project_name):
+	file_path = f'{documentation_folder}build/{project_name}.tex'
+	init_row = r'\addto\captionsenglish{\renewcommand{\contentsname}{' + first_section + '}}'
+	final_row = r'\addto\captionsenglish{\renewcommand{\contentsname}{' + project_name + '}}'
+	print(init_row)
+	print(final_row)
+	manage_file.replace_file_content(file_path, init_row, final_row)
+
+
 if __name__=="__main__":
 	##########################################
 	# Build the documentation for this project
@@ -127,7 +136,7 @@ if __name__=="__main__":
 	notebooks_folder = f'{current_folder}/../doc/notebooks/'
 
 	# Get other important variables
-	project ='Criblage'
+	project_name ='Criblage'
 	author ='Yohan'
 	version ='0.0.1'
 	language ='en'
@@ -136,10 +145,11 @@ if __name__=="__main__":
 	max_depth = 2
 	hidden = True
 	extensions = ['nbsphinx','sphinx.ext.mathjax']#,'sphinx.ext.imgmath']
+	format = 'latex'
 
 	# Prepare the Sphinx project holder
 	manage_file.remove_folder(documentation_folder)
-	quickstart_sphinx(documentation_folder, project, author, version, language, master, suffix, extensions, template='rtd')
+	quickstart_sphinx(documentation_folder, project_name, author, version, language, master, suffix, extensions, template='rtd')
 
 	# Place the notebooks in the source folder
 	ipynb_paths = notebooks_to_source(notebooks_folder, f'{documentation_folder}source')
@@ -148,4 +158,9 @@ if __name__=="__main__":
 	create_master(documentation_folder, notebooks_folder, master, max_depth, hidden)
 
 	# Make the documentation in the desired format (html, latex, srt, etc...)
-	make_doc(documentation_folder, 'html')
+	make_doc(documentation_folder, format)
+
+	# Modify the content of the latex file 
+	if format=='latex':
+		first_section = [x for x in next(os.walk(notebooks_folder))[1] if '0_' in x][0].replace('0_', '')
+		update_index(documentation_folder, first_section, project_name.upper()) 

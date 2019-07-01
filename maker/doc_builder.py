@@ -57,30 +57,6 @@ def quickstart_sphinx(documentation_folder, project, author, version, language, 
 	return
 
 
-def convert_notebooks(documentation_folder, notebooks_folder, format):
-	# Get all notebook's paths
-	notebooks_paths = glob(f'{notebooks_folder}/*/*.ipynb')
-
-	# Get their names and parent folder
-	notebooks_names = [os.path.basename(x) for x in notebooks_paths]
-	notebooks_parent_folder = [manage_file.get_parent_folder(x) for x in notebooks_paths]
-
-	# Create in the source directory the notebooks folder
-	for folder in np.unique(notebooks_parent_folder):
-		manage_file.make_folder(folder)
-
-	# Create the new paths to store and convert them in the source folder to the new format
-	paths = [f"{documentation_folder}source/{folder}/{name.replace('ipynb', '{format}')}" for folder, name in zip(notebooks_parent_folder, notebooks_names)]
-
-	# Convert them to the new format and store them in the source folder
-	for srcpath, destpath in zip(notebooks_paths, paths):
-		os.system(f"""jupyter-nbconvert --template=hider.tpl --to {format} "{srcpath}" --output "{destpath}" """)
-
-	# Get all the files matching the new format in the source folder and return them as a list
-	paths = glob(f'{documentation_folder}source/*/*.{format}')
-	return paths
-
-
 def notebooks_to_source(notebooks_folder, documentation_folder):
 	notebooks_paths = glob(f'{notebooks_folder}/*/*.ipynb')
 	notebooks_names = [os.path.basename(x) for x in notebooks_paths]
@@ -135,9 +111,9 @@ def create_master(documentation_folder, notebooks_folder, master='index', max_de
 	return
 
 
-def make_html(documentation_folder):
+def make_doc(documentation_folder, format):
 	os.chdir(documentation_folder)
-	os.system(f"""python -m sphinx {documentation_folder}source/ {documentation_folder}build/""")
+	os.system(f"""python -m sphinx -b {format} {documentation_folder}source/ {documentation_folder}build/""")
 
 
 if __name__=="__main__":
@@ -165,16 +141,11 @@ if __name__=="__main__":
 	manage_file.remove_folder(documentation_folder)
 	quickstart_sphinx(documentation_folder, project, author, version, language, master, suffix, extensions, template='rtd')
 
-	# Convert notebooks to rst files and place them in the desired location
+	# Place the notebooks in the source folder
 	ipynb_paths = notebooks_to_source(notebooks_folder, f'{documentation_folder}source')
 
-	#pdf_paths = convert_notebooks(documentation_folder, notebooks_folder, 'pdf')
-	#rst_paths = convert_notebooks(documentation_folder, notebooks_folder, 'rst')
-
-	# Insert rst files into the index file in the correct order and build the project's HTML
-	notebooks_paths = glob(f'{documentation_folder}source/*.ipynb')
+	# Create the master file with the toctrees used for making the documentation
 	create_master(documentation_folder, notebooks_folder, master, max_depth, hidden)
 
-	make_html(documentation_folder)
-
-	html_paths = glob(f'{documentation_folder}build/*html')
+	# Make the documentation in the desired format (html, latex, srt, etc...)
+	make_doc(documentation_folder, 'html')
